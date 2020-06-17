@@ -1,0 +1,127 @@
+body {
+    background: #eee;
+}
+#footer {
+    padding-bottom: 6rem;
+}
+.bodywrap {
+    min-height: 100vh;
+}
+/*.bodywrap {
+    padding-top: 6rem;
+}*/
+.card-wrap {
+    background: #fafafa;
+    border: 1px solid #eee;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    transition: all 0.5s;
+}
+.card-not {
+    margin: 0.5rem 0;
+}
+.card-not > div > p:last-child {
+    margin-bottom: 0;
+}
+.chunk-detail > div > p:last-child {
+    margin-bottom: 0;
+}
+.chunk-abs, .chunk-phon {
+    display: inline-block;
+}
+button > p:last-child {
+    margin-bottom: 0;
+}
+.audio-control .btn-group {
+    width: 100%;
+    margin: 0 auto;
+}
+.audio-meta > p {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.audio-meta, .audio-control{
+    margin: 0.5rem 0;
+}
+
+#the-navbar {
+    padding-top: 6em;
+}
+
+/*#page-player {
+    max-height: 6em;
+}*/
+
+
+
+.container.page {
+    background: #fff;
+}
+.hidden {
+    display: none;
+}
+.m0 {
+    margin: 0;
+}
+/*#footer{padding-bottom: 5rem;}*/
+
+/*#box-editing{max-height: 80vh; overflow: auto;}*/
+
+.span-nav-desc {
+    font-size: 0.6em;
+}
+.btn_stc_wrap {
+    margin: 0 0 1rem 0;
+}
+.textarea-editing, .xml-wrap {
+    margin: 1rem 0;
+}
+.xml-area-wrap {
+    background: #fff;
+    /*border-bottom: 1px solid #eee;*/
+}
+.cxn-ctrol>.col>* {
+    margin: 0.5rem 0;
+    min-height: calc(1.5em + .5rem + 2px);
+}
+.cxn-ctrol.selected {
+    background: #ff0
+}
+#page-ctrl {
+    background: #fafafa;
+    border: 1px solid #343a40;
+    border-radius: 6px;
+}
+#page-ctrl>.container>.row>.col>* {
+    margin: 0.25rem 0;
+}
+.outputbox {
+    font-size: 10px;
+}
+.card-wrap.done {
+    color: #6c757d;
+    background: #fff;
+    opacity: 0.5;
+}
+.form-control {
+    border: 1px solid #eee;
+}
+.p-control-sm {
+    margin: 0;
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+}
+.btn_stc_confirm {
+    width: 100%;
+}
+/*.btn-haha{width: 30%;margin-left: auto;}*/
+
+.progress-bar {
+    transition: all 0.5s;
+}
+.btn {
+    transition: all 0.5s;
+}
