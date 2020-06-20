@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title>ling-notes</title>
+    <title>iChat</title>
 
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" type="text/css">
@@ -19,23 +19,23 @@
 
 <body>
 
-<div class="bodywrap" id="bodywrap">
+<div class="bodywrap" id="bodywrap"><div id="wrap-wrap">
 
     <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="the-navbar">
-        <a class="navbar-brand" href="#">ling-notes</a>
+        <a class="navbar-brand" href="#">iChat</a>
     </nav> -->
 
     <!-- <div class="container my-5 page hiddent" id="page-audio"><div class="container py-2">
     </div></div> -->
 
-    <div class="container my-1 page hiddent" id="page-import"><div class="container py-2">
+    <div class="container page hiddent" id="page-import"><div class="container py-2">
         <div class="row">
             <div class="col">
                 <form name="file-form" class="container">
                     <div class="row" id="filePicker">
                         <!-- <label for="file-input" class="col-md-2 my-2 col-form-label text-md-right">选择文件：</label> -->
                         <div class="col-md-8 my-2">
-                            <input type="file" class="form-control" name="file-input" id="file-input" multiple="multiple" data-accept=".json" />
+                            <input type="file" class="form-control" name="file-input" id="file-input" multiple="multiple" data-accept=".sqlite" />
                         </div>
                         <div class="btn-group col-md-4 my-2">
                             <button type="button" name="do_import" id="do_import" class="btn btn-primary" v-on:click="onImport">📥</button>
@@ -48,37 +48,68 @@
 
     <div class="container my-5 py-2 page" id="page-read"><div class="container py-1">
 
-            <div v-for="msg in messages" v-if="msg.Type==1&&msg.Des == 0" class="row my-1">
-                <!-- <div class="col col-sm-2">
-                    <div class="card-wrap">
-                        <p>{{ msg.Des == 1 ? '对方' : '己方' }}</p>
+            <div v-for="msg in messages" vvv-if="msg.Type==1&&msg.Des == 0" class="row my-1">
+                <div class="col col-sm-2">
+                    <div v-if="msg.Des == 1" class="card-wrap">
+                        <p class="msg-sender">他人</p>
                     </div>
-                </div> -->
-                <div class="col col-sm-10">
+                </div>
+                <div class="col col-sm-8">
                     <div class="card-wrap">
-                        <p>{{ msg.Message }}</p>
+                        <pre class="msg-content" :data-msg-MesSvrID="msg.MesSvrID">{{ msg.Message }}</pre>
+                    </div>
+                </div>
+                <div class="col col-sm-2">
+                    <div v-if="msg.Des == 0" class="card-wrap">
+                        <p class="msg-sender">自己</p>
                     </div>
                 </div>
             </div>
 
     </div></div>
 
-</div>
+    <div class="container my-5 py-2 page" id="page-chats"><div class="container py-1">
 
+            <div class="row my-1">
+                <div v-for="chat in current_db_chats" class="col col-sm-6 col-md-4 col-lg-2">
+                    <div class="card-wrap">
+                        <p class="chat-name" :title="chat.name" v-on:click="makeMsgs(chat.name)">{{ chat.name }}</p>
+                    </div>
+                </div>
+            </div>
 
+    </div></div>
 
-
-
-<footer class="pt-4 bg-dark text-white" id="footer">
+<footer class="py-3 bg-dark text-white border border-dark" id="footer-placeholder">
     <div class="container text-center">
-        <p>Github: <a href="https://github.com/gitforziio/ling-notes-reader" target="_blank">@gitforziio/ling-notes-reader</a></p>
+        <div><span class="placeholder"></span></div>
     </div>
 </footer>
 
-<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+<!-- Alert -->
+<div class="alert-wrap" style="display: block;" ref="alert_wrap">
+    <transition name = "fade" v-for="alert in ui.alerts"><div v-show = "alert.show" class="alert alert-dismissible alert-success" :class="'alert-'+alert.class">
+        <button type="button" class="close" v-on:click="remove_alert(alert.idx)">&times;</button>
+        <div v-html="alert.html"></div>
+    </div></transition>
+</div>
+
+</div>
+
+<footer class="py-3 bg-dark text-white border border-dark" id="footer">
+    <div class="container text-center">
+        <div>Github: <a href="https://github.com/gitforziio" target="_blank">@gitforziio</a><a href="https://github.com/gitforziio/iChat" target="_blank">/iChat</a></div>
+    </div>
+</footer>
+
+</div>
+
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/alasql/0.6.1/alasql.min.js"></script> -->
+<script src="https://cdn.bootcdn.net/ajax/libs/sql.js/1.3.0/dist/sql-wasm.js"></script>
 <!-- <script src="https://cdn.bootcss.com/d3/5.12.0/d3.min.js"></script> -->
 <script src="https://cdn.bootcdn.net/ajax/libs/xregexp/3.2.0/xregexp-all.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/marked/1.1.0/marked.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 
 <script type="text/javascript" src="js/FileSaver.js"></script>
 <script type="text/javascript" src="js/main.js"></script>

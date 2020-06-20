@@ -1,15 +1,65 @@
+.alert-wrap {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 2050;
+    display: none;
+    width: 360px;
+    max-width: 80vw;
+    overflow: hidden;
+    outline: 0;
+}
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to
+/* .fade-leave-active, 2.1.8 版本以下 */
+
+    {
+    opacity: 0;
+    /*display: none;*/
+}
+.modal-wrap {
+    position: fixed;
+    z-index: 1040;
+}
+.modal-fade-enter-active, .modal-fade-leave-active {
+    transition: opacity 0.5s;
+}
+.modal-fade-enter, .modal-fade-leave-to
+/* .modal-fade-leave-active, 2.1.8 版本以下 */
+
+    {
+    opacity: 0;
+    z-index: 1040;
+    /*display: none;*/
+}
+
+
 body {
     background: #eee;
 }
-#footer {
-    padding-bottom: 6rem;
-}
 .bodywrap {
+    position: relative;
     min-height: 100vh;
 }
-/*.bodywrap {
-    padding-top: 6rem;
-}*/
+#wrap-wrap {
+    padding: 1rem 0 0;
+}
+#footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+}
+#footer-placeholder {
+    opacity: 0;
+}
+span.placeholder:before {
+    content: 'placeholder';
+}
+
+
+
 .card-wrap {
     background: #fafafa;
     border: 1px solid #eee;
@@ -17,6 +67,26 @@ body {
     padding: 0.5rem;
     transition: all 0.5s;
 }
+.chat-name {
+    margin: 0;
+    text-overflow:ellipsis;overflow:hidden;
+}
+
+.msg-content {
+    margin: 0;
+    text-overflow:ellipsis;overflow:auto;
+}
+
+.msg-sender {
+    margin: 0;
+    text-overflow:ellipsis;overflow:hidden;
+}
+
+
+
+
+
+
 .card-not {
     margin: 0.5rem 0;
 }
