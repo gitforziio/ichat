@@ -48,19 +48,26 @@
 
     <div class="container my-5 py-2 page" id="page-read"><div class="container py-1">
 
-            <div v-for="msg in messages" vvv-if="msg.Type==1&&msg.Des == 0" class="row my-1">
+            <div v-for="msg in messages" class="row my-1">
                 <div class="col col-sm-2">
-                    <div v-if="msg.Des == 1" class="card-wrap">
+                    <div v-if="msg.Des == 1" class="rounded card-wrap">
                         <p class="msg-sender">他人</p>
                     </div>
                 </div>
                 <div class="col col-sm-8">
-                    <div class="card-wrap">
-                        <pre class="msg-content" :data-msg-MesSvrID="msg.MesSvrID">{{ msg.Message }}</pre>
+                    <div class="rounded msg-wrap" :data-msg-CreateTime="msg.CreateTime" :data-msg-Des="msg.Des" :data-msg-ImgStatus="msg.ImgStatus" :data-msg-MesLocalID="msg.MesLocalID" :data-msg-MesSvrID="msg.MesSvrID" :data-msg-Status="msg.Status" :data-msg-TableVer="msg.TableVer" :data-msg-Type="msg.Type">
+                        <div v-if="msg.Type==3">【此为微信表情】</div>
+                        <div v-if="msg.Type==34">【此为语音消息】</div>
+                        <div v-if="msg.Type==42">【此为名片】</div>
+                        <div v-if="msg.Type==47">【此为自定义表情】</div>
+                        <div v-if="msg.Type==47"><img class="msg-emoji-custom" :src="getImgUrl(msg.Message)"></div>
+                        <div v-if="msg.Type==49">【此为分享内容】</div>
+                        <div v-if="msg.Type==49"><div v-html="getShareHtml(msg.Message)"></div></div>
+                        <pre v-if="msg.Type!=4999 && msg.Type!=47 && msg.Type!=4222 && msg.Type!=34 && msg.Type!=3" class="msg-content">{{ msg.Message }}</pre>
                     </div>
                 </div>
                 <div class="col col-sm-2">
-                    <div v-if="msg.Des == 0" class="card-wrap">
+                    <div v-if="msg.Des == 0" class="rounded card-wrap">
                         <p class="msg-sender">自己</p>
                     </div>
                 </div>
@@ -73,7 +80,7 @@
             <div class="row my-1">
                 <div v-for="chat in current_db_chats" class="col col-sm-6 col-md-4 col-lg-2">
                     <div class="card-wrap">
-                        <p class="chat-name" :title="chat.name" v-on:click="makeMsgs(chat.name)">{{ chat.name }}</p>
+                        <p class="chat-name" :title="chat.name" v-on:click="push_alert('info', `开始读取聊天记录「${chat.name}」`);makeMsgs(chat.name);">{{ chat.name }}</p>
                     </div>
                 </div>
             </div>

@@ -36,6 +36,13 @@
 }
 
 
+p:last-child {
+    margin-bottom: 0;
+}
+.msg-wrap p {
+    margin-bottom: 0;
+}
+
 body {
     background: #eee;
 }
@@ -72,9 +79,28 @@ span.placeholder:before {
     text-overflow:ellipsis;overflow:hidden;
 }
 
+.msg-wrap {
+    background: #fafafa;
+    border: 1px solid #eee;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    transition: all 0.5s;
+}
+
+.msg-wrap[data-msg-Des="0"] {
+    background: #95EC69;
+    border: 1px solid #7DDF4C;
+}
+
 .msg-content {
+    max-height: 10em;
     margin: 0;
     text-overflow:ellipsis;overflow:auto;
+}
+
+.msg-emoji-custom {
+    display: block;
+    max-width: 50%;
 }
 
 .msg-sender {

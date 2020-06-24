@@ -83,10 +83,50 @@ var the_vue = new Vue({
         },
         makeMsgs: function(tb_name) {
             let self = this;
-            let stmt = self.current_db.prepare(`SELECT * FROM ${tb_name}`);
-            self.messages = [];
-            while (stmt.step()) {self.messages.push(stmt.getAsObject());};
+            let self_messages = [];
+            // self.push_alert('info', `开始读取聊天记录「${tb_name}」`);
+            let stmt = self.current_db.prepare(`SELECT * FROM ${tb_name} ORDER BY CreateTime`);
+            while (stmt.step()) {self_messages.push(stmt.getAsObject());};
             stmt.free();
+            // self_messages.sort((a, b) => a.CreateTime - b.CreateTime);
+            self.messages = self_messages;
+            self.push_alert('success', `聊天记录「${tb_name}」读取完毕！`);
+        },
+        getImgUrl: function(text) {
+            let match = text.match(/cdnurl="[^"]+"/);
+            if (match) {
+                return match[0].slice(8, -1);
+            } else {
+                return '';
+            };
+        },
+        getShareHtml: function(text) {
+            let title = '【无标题】';
+            let desc = '【无说明】';
+            let url = '#';
+            let type = '';
+            let match = '';
+            let result = '';
+            //
+            match = text.match(/<type>[^<>]+<\/type>/);
+            if (match) {type = match[0].slice(6, -7);};
+            //
+            if (type=="5") {
+                match = text.match(/<title>[^<>]+<\/title>/);
+                if (match) {title = match[0].slice(7, -8);};
+                match = text.match(/<des>[^<>]+<\/des>/);
+                if (match) {desc = match[0].slice(5, -6);};
+                match = text.match(/<url>[^<>]+<\/url>/);
+                if (match) {url = match[0].slice(5, -6);};
+                result = `<p><a href="${url}" target="_blank">${title}</a></p><p>${desc}</p>`;
+            } else if (type=="6") {
+                match = text.match(/<title>[^<>]+<\/title>/);
+                if (match) {title = match[0].slice(7, -8);};
+                result = `<p>【这是文件】</p><p>${title}</p>`;
+            } else if (type=="19") {
+                result = '【这是聊天记录】';
+            };
+            return result;
         },
 
 
