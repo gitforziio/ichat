@@ -1,3 +1,74 @@
+var hex_to_utf8 = function (hex_string) {
+    // a string like "e7be8ee7be8ee7be8ee985b1f09f9088"
+    if (hex_string.length == 0) {
+        return ""
+    }
+
+    var chars = []
+    for (var i = 0; i < hex_string.length; i += 2) {
+        var cur_hex = hex_string.substr(i, 2)
+        var cur_dec = parseInt(cur_hex, 16)
+        var cur_char = String.fromCharCode(cur_dec)
+        chars.push(cur_char)
+    }
+    //convert to unicode first
+    // let utf8 = require('utf8')
+    let result = "";
+    try {
+        result = utf8.decode(chars.join(''));
+    } catch(err) {
+        console.debug(hex_string);
+        console.debug(hex_string.length);
+        console.debug(chars);
+        for (let char of chars) {
+            try {
+                console.debug(utf8.decode(char));
+            } catch(err) {
+                console.debug(char);
+            }
+        }
+    }
+    return result
+};
+
+function decode_user_name_info (h_string) {
+    let hex_string;
+    if (h_string.substr(0, 2) == "x'") {
+        hex_string = h_string.substring(2, h_string.length - 1)
+    } else {
+        console.debug("!!!!!!!")
+    }
+
+    // let marks = ['0a', '12', '1a', '22', '2a', '32', '3a', '42']
+
+    var i = 0
+    var all_data = {}
+    while (i < hex_string.length) {
+        var current_mark = hex_string.substr(i, 2)
+        var data_length = hex_string.substr(i + 2, 2)
+        var data_length = parseInt(data_length, 16) * 2;//hex to dec
+        var hex_data = hex_string.substr(i + 4, data_length)
+        if (hex_data.length == 256) {
+            console.debug(h_string);
+            console.debug(h_string.length);
+        }
+        // console.debug(hex_data);
+        try {
+            var utf8_data = hex_to_utf8(hex_data)
+            all_data[current_mark] = utf8_data
+        } catch(err) {}
+        i += 4 + data_length
+    }
+    // console.log(all_data)
+    return {
+        "nickname": all_data['0a'],
+        "wechatID": all_data['12'],
+        "remark": all_data['1a'],
+        //
+        "all_data": all_data,
+    }
+}
+
 
 
 var the_vue = new Vue({
@@ -21,6 +92,8 @@ var the_vue = new Vue({
                 "Type": 1
             },
         ],
+        chat_items: [],
+        chat_name_dict: {},
         ui: {
             modal_open: 0,
             nav_collapsed: 1,
@@ -43,9 +116,31 @@ var the_vue = new Vue({
         // },
     },
     methods: {
+        onImportNames: function() {
+            let self = this;
+            let fileList = self.$refs.namesdbfile.files;
+            // console.log(fileList);
+            let file_meta_list = [];
+            let idx = 0;
+            for (let file of fileList) {
+                file_meta_list.push({
+                    "idx": idx,
+                    "name": file.name,
+                    "file": file,
+                    "url": URL.createObjectURL(file),
+                    "content": "",
+                });
+                idx += 1;
+            }
+            self.file_meta_list = file_meta_list;
+            self.current_file_meta = file_meta_list[0];
+            // console.log(self.current_file_meta);
+            // self.makeDB();
+            self.xxx();
+        },
         onImport: function() {
             let self = this;
-            let fileList = document.forms["file-form"]["file-input"].files;
+            let fileList = self.$refs.dbfile.files;
             // console.log(fileList);
             let file_meta_list = [];
             let idx = 0;
@@ -63,6 +158,37 @@ var the_vue = new Vue({
             self.current_file_meta = file_meta_list[0];
             // console.log(self.current_file_meta);
             self.makeDB();
+            // self.xxx();
+        },
+        xxx() {
+            let self = this;
+            let reader = new FileReader();
+            reader.onload = function() {
+                var Uints = new Uint8Array(reader.result);
+                var config = {locateFile: filename => `./dist/${filename}`};
+                initSqlJs(config).then(function(SQL){
+                    self.current_db = new SQL.Database(Uints);
+                    self.push_alert('success', `已载入「${self.current_file_meta.file.name}」`);
+                    let stmt = self.current_db.prepare("SELECT *,lower(quote(dbContactRemark)) as cr FROM Friend");
+                    self.chat_items = [];
+                    while (stmt.step()) {
+                        let eee = stmt.getAsObject();
+                        eee.nameMd5 = md5(eee.userName);
+                        eee.nameInfo = decode_user_name_info(eee.cr);
+                        eee.nameInfo.nameMd5 = eee.nameMd5;
+                        // console.log(eee);
+                        self.chat_items.push(eee);
+                        self.chat_name_dict[eee.nameMd5] = eee.nameInfo;
+                        //
+                        if (eee.cr.length == 453) {
+                            console.debug(eee);
+                        }
+                        //
+                    };
+                    stmt.free();
+                });
+            }
+            reader.readAsArrayBuffer(self.current_file_meta.file);
         },
         makeDB: function() {
             let self = this;
@@ -75,7 +201,14 @@ var the_vue = new Vue({
                     self.push_alert('success', `已载入「${self.current_file_meta.file.name}」`);
                     let stmt = self.current_db.prepare("SELECT * FROM sqlite_sequence");
                     self.current_db_chats = [];
-                    while (stmt.step()) {self.current_db_chats.push(stmt.getAsObject());};
+                    while (stmt.step()) {
+                        let jjjjj = stmt.getAsObject();
+                        jjjjj.chat_name = jjjjj.name;
+                        let cccc = self.chat_name_dict[jjjjj.name.slice(5)];
+                        jjjjj.name = cccc.remark || cccc.nickname || cccc.wechatID;
+                        // self.chat_name_dict[jjjjj.name]
+                        self.current_db_chats.push(jjjjj);
+                    };
                     stmt.free();
                 });
             }
