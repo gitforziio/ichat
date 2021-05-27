@@ -205,7 +205,7 @@ var the_vue = new Vue({
                         let jjjjj = stmt.getAsObject();
                         jjjjj.chat_name = jjjjj.name;
                         let cccc = self.chat_name_dict[jjjjj.name.slice(5)];
-                        jjjjj.name = cccc.remark || cccc?.nickname || cccc?.wechatID || "?";
+                        jjjjj.name = cccc?.remark || cccc?.nickname || cccc?.wechatID || "?";
                         // self.chat_name_dict[jjjjj.name]
                         self.current_db_chats.push(jjjjj);
                     };
