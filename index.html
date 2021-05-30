@@ -98,7 +98,7 @@
             <div class="row my-1">
                 <div v-for="chat in current_db_chats" class="col col-sm-6 col-md-4 col-lg-2">
                     <div class="card-wrap">
-                        <p class="chat-name" :title="chat.name" v-on:click="push_alert('info', `开始读取聊天记录「${chat.name}」`);makeMsgs(chat.chat_name);">{{ chat.name }}</p>
+                        <p class="chat-name" :title="chat.name" v-on:click="push_alert('info', `开始读取聊天记录「${chat.name}」`);makeMsgs(chat);">{{ chat.name }}</p>
                     </div>
                 </div>
             </div>

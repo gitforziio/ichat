@@ -205,7 +205,7 @@ var the_vue = new Vue({
                         let jjjjj = stmt.getAsObject();
                         jjjjj.chat_name = jjjjj.name;
                         let cccc = self.chat_name_dict[jjjjj.name.slice(5)];
-                        jjjjj.name = cccc?.remark || cccc?.nickname || cccc?.wechatID || "?";
+                        jjjjj.name = cccc?.remark || cccc?.nickname || cccc?.wechatID || jjjjj.chat_name || "?";
                         // self.chat_name_dict[jjjjj.name]
                         self.current_db_chats.push(jjjjj);
                     };
@@ -214,16 +214,28 @@ var the_vue = new Vue({
             }
             reader.readAsArrayBuffer(self.current_file_meta.file);
         },
-        makeMsgs: function(tb_name) {
+        async makeMsgs(chat) {
             let self = this;
+            let tb_name = chat.chat_name;
             let self_messages = [];
             // self.push_alert('info', `开始读取聊天记录「${tb_name}」`);
-            let stmt = self.current_db.prepare(`SELECT * FROM ${tb_name} ORDER BY CreateTime`);
-            while (stmt.step()) {self_messages.push(stmt.getAsObject());};
-            stmt.free();
+            let stmt = await self.current_db.prepare(`SELECT * FROM ${tb_name} ORDER BY CreateTime`);
+            while (stmt.step()) {
+                await self_messages.push(stmt.getAsObject());
+            };
+            await stmt.free();
             // self_messages.sort((a, b) => a.CreateTime - b.CreateTime);
-            self.messages = self_messages;
+            // self_messages = await self_messages.sort((a, b) => a.CreateTime - b.CreateTime);
+            let blob = new Blob([JSON.stringify(self_messages, null, 2)], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, `${chat.name}.json`);
             self.push_alert('success', `聊天记录「${tb_name}」读取完毕！`);
+            self.messages = self_messages;
+            // await self.saveMsgs(chat);
+        },
+        saveMsgs(chat) {
+            let self = this;
+            let blob = new Blob([JSON.stringify(self.messages, null, 2)], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, `${chat.name}.json`);
         },
         getImgUrl: function(text) {
             let match = text.match(/cdnurl="[^"]+"/);
